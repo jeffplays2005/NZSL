@@ -5,8 +5,7 @@ namespace A1_jji134
     class Program
     {
         static void Main(string[] args)
-        {
-
+        {  
         }
     }
 }

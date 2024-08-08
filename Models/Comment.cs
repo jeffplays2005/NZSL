@@ -16,19 +16,23 @@ namespace A1_jji134.Models
         * Format: yyyyMMddTHHmmssZ
         * year, month, date, T(serperator), hour, minute, second, Z(utc)
         */
+        [Required]
         public string Time { get; set; }
         /**
         * The comment that the user writes.
         */
+        [Required]
         public string UserComment { get; set; }
         /**
         * Name of the user that writes the comment.
         */
+        [Required]
         public string Name { get; set; }
         /**
         * The IP address of the user that writes the comment.
         * Obtained through the Request.HttpContext.Connection.RemoteIpAddress property.
         */
+        [Required]
         public string IP { get; set; }
     }
 }
