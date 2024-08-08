@@ -7,9 +7,10 @@ namespace A1_jji134.Data
     {
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Sign> Signs { get; set; }
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=A1Database.sqlite");
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=A1Database.sqlite");
+        }
     }
 }
