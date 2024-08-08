@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace A1_jji134.Models {
-    public class Sign {
+namespace A1_jji134.Models
+{
+    public class Sign
+    {
         /**
         * The sign ID, uniquely identifies each sign based on an int.
         * Primary key (PK)
