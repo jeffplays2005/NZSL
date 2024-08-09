@@ -1,4 +1,6 @@
-﻿namespace A1_jji134.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace A1_jji134.Dtos
 {
     /**
     * Note that only the UserComment and Name from the Comment model is in this DTO.
