@@ -10,7 +10,7 @@ namespace A1_jji134.Data
 
         // Sign database actions
         IEnumerable<Sign> GetAllSigns();
-        Sign GetSignID(int id);
+        Sign GetSignByID(int id);
         Sign AddSign(Sign sign);
     }
 }

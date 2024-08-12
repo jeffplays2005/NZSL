@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using A1_jji134.Data;
 
 namespace A1_jji134

@@ -8,7 +8,7 @@ namespace A1_jji134.Data
         /**
         * Local DB context reference, injected through the constructor.
         */
-        private readonly WebAPIDBContext _dbContext;
+        private readonly A1DbContext _dbContext;
         /**
         * DB Context constructor
         * @params A1DbContext The DB context.
@@ -26,8 +26,7 @@ namespace A1_jji134.Data
         }
         public Comment GetCommentByID(int id)
         {
-            return _dbContext.Comments.FirstOrDefault(c => 
-            c.Id == id)
+            return _dbContext.Comments.FirstOrDefault(c => c.Id == id);
         }
         public Comment AddComment(Comment comment)
         {
@@ -46,8 +45,7 @@ namespace A1_jji134.Data
         }
         public Sign GetSignByID(int id)
         {
-            return _dbContext.Signs.FirstOrDefault(s => 
-            s.Id == id)
+            return _dbContext.Signs.FirstOrDefault(s => s.Id == id);
         }
         public Sign AddSign(Sign sign)
         {
