@@ -6,10 +6,7 @@ namespace A1_jji134
     {
         static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder()
-            builder.Services.addDbContext<A1DbContext>(options => 
-                options.UseSqlite(builder.Configuration["WebAPIConnection"])
-            );
+            var builder = WebApplication.CreateBuilder();
         }
     }
 }
