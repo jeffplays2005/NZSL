@@ -15,12 +15,14 @@ namespace A1_jji134.Controllers
             _repository = repository;
         }
 
+        // Endpoint 1
         [HttpGet("GetVersion")]
         public ActionResult GetVersion()
         {
             return Ok("1.0.0 (Ngāruawāhia) by jji134");
         }
 
+        // Endpoint 2
         [HttpGet("Logo")]
         public ActionResult GetLogo()
         {
@@ -32,6 +34,7 @@ namespace A1_jji134.Controllers
             return PhysicalFile(fileName, respHeader);
         }
 
+        // Endpoint 3
         [HttpGet("AllSigns")]
         public ActionResult<IEnumerable<Sign>> GetSigns()
         {
@@ -39,6 +42,7 @@ namespace A1_jji134.Controllers
             return Ok(signs);
         }
 
+        // Endpoint 4
         [HttpGet("Signs/{term}")]
         public ActionResult<IEnumerable<Sign>> GetSign(string term)
         {
