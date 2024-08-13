@@ -52,5 +52,37 @@ namespace A1_jji134.Controllers
 
             return Ok(filteredSigns);
         }
+
+        // Endpoint 5
+        [HttpGet("SignImage/{id}")]
+        public ActionResult GetSignImage(string id)
+        {
+            string path = Directory.GetCurrentDirectory();
+            string imgDir = Path.Combine(path, "SignsImages");
+
+            // All the possible images
+            string png = Path.Combine(imgDir, id + ".png");
+            string jpg = Path.Combine(imgDir, id + ".jpg");
+            string gif = Path.Combine(imgDir, id + ".gif");
+
+            string fileName = Path.Combine(imgDir, "default" + ".png");
+            string respHeader = "image/png";
+
+            if (System.IO.File.Exists(png))
+            {
+                fileName = png;
+            }
+            else if (System.IO.File.Exists(jpg))
+            {
+                fileName = jpg;
+                respHeader = "image/jpeg";
+            }
+            else if (System.IO.File.Exists(gif))
+            {
+                fileName = gif;
+                respHeader = "image/gif";
+            }
+            return PhysicalFile(fileName, respHeader);
+        }
     }
 }
