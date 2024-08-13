@@ -1,4 +1,4 @@
-﻿using A1_jji134.Models;
+using A1_jji134.Models;
 
 namespace A1_jji134.Data
 {
