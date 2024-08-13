@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using A1_jji134.Data;
+using A1_jji134.Models;
 
 namespace A1_jji134.Controllers
 {
@@ -14,12 +15,14 @@ namespace A1_jji134.Controllers
             _repository = repository;
         }
 
+        // Endpoint 1
         [HttpGet("GetVersion")]
         public ActionResult GetVersion()
         {
             return Ok("1.0.0 (Ngāruawāhia) by jji134");
         }
 
+        // Endpoint 2
         [HttpGet("Logo")]
         public ActionResult GetLogo()
         {
@@ -29,6 +32,28 @@ namespace A1_jji134.Controllers
 
             string respHeader = "image/png";
             return PhysicalFile(fileName, respHeader);
+        }
+
+        // Endpoint 3
+        [HttpGet("AllSigns")]
+        public ActionResult<IEnumerable<Sign>> GetSigns()
+        {
+            IEnumerable<Sign> signs = _repository.GetAllSigns();
+            return Ok(signs);
+        }
+
+        // Endpoint 4
+        [HttpGet("Signs/{term}")]
+        public ActionResult<IEnumerable<Sign>> GetSign(string term)
+        {
+            IEnumerable<Sign> signs = _repository.GetAllSigns();
+            IEnumerable<Sign> filteredSigns = signs.Where(sign =>
+                sign.Description
+                .ToLower()
+                .Contains(term.ToLower())
+            );
+
+            return Ok(filteredSigns);
         }
     }
 }
