@@ -38,5 +38,15 @@ namespace A1_jji134.Controllers
             IEnumerable<Sign> signs = _repository.GetAllSigns();
             return Ok(signs);
         }
+
+        [HttpGet("Signs/{term}")]
+        public ActionResult<IEnumerable<Sign>> GetSign(string term)
+        {
+            IEnumerable<Sign> signs = _repository.GetAllSigns();
+            IEnumerable<Sign> filteredSigns =
+                signs.Where(s => s.Description.Contains(term));
+
+            return Ok(filteredSigns);
+        }
     }
 }
