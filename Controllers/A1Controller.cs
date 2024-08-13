@@ -28,7 +28,7 @@ namespace A1_jji134.Controllers
         {
             string path = Directory.GetCurrentDirectory();
             string imgDir = Path.Combine(path, "Logos/Logo.png");
-            return PhysicalFile(imgDir, "image/png"3);
+            return PhysicalFile(imgDir, "image/png");
         }
 
         // Endpoint 3
