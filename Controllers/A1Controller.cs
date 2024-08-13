@@ -19,5 +19,16 @@ namespace A1_jji134.Controllers
         {
             return Ok("1.0.0 (Ngāruawāhia) by jji134");
         }
+
+        [HttpGet("Logo")]
+        public ActionResult GetLogo()
+        {
+            string path = Directory.GetCurrentDirectory();
+            string imgDir = Path.Combine(path, "Logos");
+            string fileName = Path.Combine(imgDir, "Logo" + ".png");
+
+            string respHeader = "image/png";
+            return PhysicalFile(fileName, respHeader);
+        }
     }
 }
