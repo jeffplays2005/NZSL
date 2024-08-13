@@ -43,8 +43,11 @@ namespace A1_jji134.Controllers
         public ActionResult<IEnumerable<Sign>> GetSign(string term)
         {
             IEnumerable<Sign> signs = _repository.GetAllSigns();
-            IEnumerable<Sign> filteredSigns =
-                signs.Where(s => s.Description.Contains(term));
+            IEnumerable<Sign> filteredSigns = signs.Where(sign =>
+                sign.Description
+                .ToLower()
+                .Contains(term.ToLower())
+            );
 
             return Ok(filteredSigns);
         }
