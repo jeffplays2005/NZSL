@@ -55,5 +55,12 @@ namespace A1_jji134.Controllers
 
             return Ok(filteredSigns);
         }
+
+        // Endpoint 5
+        [HttpGet("SignImage/{id}")]
+        public ActionResult GetSignImage(string id)
+        {
+
+        }
     }
 }
