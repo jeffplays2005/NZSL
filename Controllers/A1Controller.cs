@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using A1_jji134.Data;
+using A1_jji134.Models;
 
 namespace A1_jji134.Controllers
 {
@@ -29,6 +30,13 @@ namespace A1_jji134.Controllers
 
             string respHeader = "image/png";
             return PhysicalFile(fileName, respHeader);
+        }
+
+        [HttpGet("AllSigns")]
+        public ActionResult<IEnumerable<Sign>> GetSigns()
+        {
+            IEnumerable<Sign> signs = _repository.GetAllSigns();
+            return Ok(signs);
         }
     }
 }
