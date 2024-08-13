@@ -20,11 +20,19 @@ namespace A1_jji134
             builder.Services.AddControllers();
             // Register implementation of A1Repo.
             builder.Services.AddScoped<IA1Repo, A1Repo>();
+            // For Swqagger Testing
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
             // app.UseHttpsRedirection();
             // app.UseAuthorization();
             app.MapControllers();
+            // For Swagger testing
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
             app.Run();
         }
     }

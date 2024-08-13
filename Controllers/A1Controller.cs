@@ -27,11 +27,8 @@ namespace A1_jji134.Controllers
         public ActionResult GetLogo()
         {
             string path = Directory.GetCurrentDirectory();
-            string imgDir = Path.Combine(path, "Logos");
-            string fileName = Path.Combine(imgDir, "Logo" + ".png");
-
-            string respHeader = "image/png";
-            return PhysicalFile(fileName, respHeader);
+            string imgDir = Path.Combine(path, "Logos/Logo.png");
+            return PhysicalFile(imgDir, "image/png");
         }
 
         // Endpoint 3
