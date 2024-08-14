@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using A1_jji134.Data;
+using A1_jji134.Dtos;
 using A1_jji134.Models;
 
 namespace A1_jji134.Controllers
@@ -95,6 +96,21 @@ namespace A1_jji134.Controllers
                 return BadRequest(("Comment {0} does not exist.", id));
             }
             return Ok(comment);
+        }
+
+        // Endpoint 7
+        [HttpPost("WriteComment")]
+        public ActionResult<Comment> WriteComment(CommentInputDto commentInput)
+        {
+            Comment comment = new Comment
+            {
+                Time = DateTime.UtcNow.ToString("yyyyMMddTHHmmssZ"),
+                UserComment = commentInput.UserComment,
+                Name = commentInput.Name,
+                IP = Request.HttpContext.Connection.RemoteIpAddress.ToString()
+            };
+            Comment newComment = _repository.AddComment(comment);
+            return Ok(newComment);
         }
     }
 }
