@@ -9,7 +9,7 @@ namespace A1_jji134.Models
         * Primary key (PK)
         */
         [Key]
-        public int Id { get; set;}
+        public string Id { get; set;}
 
         /**
         * Contains the description of the sign.
