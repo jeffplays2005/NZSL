@@ -43,7 +43,7 @@ namespace A1_jji134.Data
         {
             return _dbContext.Signs.ToList();
         }
-        public Sign GetSignByID(int id)
+        public Sign GetSignByID(string id)
         {
             return _dbContext.Signs.FirstOrDefault(s => s.Id == id);
         }
