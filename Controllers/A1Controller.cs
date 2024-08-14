@@ -93,7 +93,7 @@ namespace A1_jji134.Controllers
             Comment comment = _repository.GetCommentByID(id);
             if (comment == null)
             {
-                return BadRequest(("Comment {0} does not exist.", id));
+                return BadRequest("Comment "+ id +" does not exist.");
             }
             return Ok(comment);
         }
