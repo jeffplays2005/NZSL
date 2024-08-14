@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using A1_jji134.Data;
+using A1_jji134.Dtos;
 using A1_jji134.Models;
 
 namespace A1_jji134.Controllers
@@ -83,6 +84,45 @@ namespace A1_jji134.Controllers
                 respHeader = "image/gif";
             }
             return PhysicalFile(fileName, respHeader);
+        }
+
+        // Endpoint 6
+        [HttpGet("GetComment/{id}")]
+        public ActionResult<Comment> GetComment(int id)
+        {
+            Comment comment = _repository.GetCommentByID(id);
+            if (comment == null)
+            {
+                return BadRequest(("Comment {0} does not exist.", id));
+            }
+            return Ok(comment);
+        }
+
+        // Endpoint 7
+        [HttpPost("WriteComment")]
+        public ActionResult<Comment> WriteComment(CommentInputDto commentInput)
+        {
+            Comment comment = new Comment
+            {
+                Time = DateTime.UtcNow.ToString("yyyyMMddTHHmmssZ"),
+                UserComment = commentInput.UserComment,
+                Name = commentInput.Name,
+                IP = Request.HttpContext.Connection.RemoteIpAddress.ToString()
+            };
+            Comment newComment = _repository.AddComment(comment);
+            return Ok(newComment);
+        }
+
+        // Endpoint 8
+        [HttpGet("Comments/{num}")]
+        public ActionResult<IEnumerable<Comment>> GetComments(int num = 5)
+        {
+            IEnumerable<Comment> comments = _repository
+                .GetAllComments()
+                .OrderByDescending(comment => comment.Id)
+                .Take(num);
+
+            return Ok(comments);
         }
     }
 }
