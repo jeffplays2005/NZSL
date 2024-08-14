@@ -84,5 +84,17 @@ namespace A1_jji134.Controllers
             }
             return PhysicalFile(fileName, respHeader);
         }
+
+        // Endpoint 6
+        [HttpGet("GetComment/{id}")]
+        public ActionResult<Comment> GetComment(int id)
+        {
+            Comment comment = _repository.GetCommentByID(id);
+            if (comment == null)
+            {
+                return BadRequest(("Comment {0} does not exist.", id));
+            }
+            return Ok(comment);
+        }
     }
 }
