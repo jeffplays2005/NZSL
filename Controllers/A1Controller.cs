@@ -112,5 +112,17 @@ namespace A1_jji134.Controllers
             Comment newComment = _repository.AddComment(comment);
             return Ok(newComment);
         }
+
+        // Endpoint 8
+        [HttpGet("Comments/{num}")]
+        public ActionResult<IEnumerable<Comment>> GetComments(int num = 5)
+        {
+            IEnumerable<Comment> comments = _repository
+                .GetAllComments()
+                .OrderByDescending(comment => comment.Id)
+                .Take(num);
+
+            return Ok(comments);
+        }
     }
 }
