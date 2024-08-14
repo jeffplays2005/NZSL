@@ -66,7 +66,7 @@ namespace A1_jji134.Controllers
             string jpg = Path.Combine(imgDir, id + ".jpg");
             string gif = Path.Combine(imgDir, id + ".gif");
 
-            string fileName = Path.Combine(imgDir, "default" + ".png");
+            string fileName = Path.Combine(imgDir, "default.png");
             string respHeader = "image/png";
 
             if (System.IO.File.Exists(png))
@@ -110,7 +110,7 @@ namespace A1_jji134.Controllers
                 IP = Request.HttpContext.Connection.RemoteIpAddress.ToString()
             };
             Comment newComment = _repository.AddComment(comment);
-            return Ok(newComment);
+            return CreatedAtAction(nameof(GetComment), new { id = newComment.Id }, newComment);
         }
 
         // Endpoint 8
