@@ -10,6 +10,6 @@ namespace A2_jji134.Data
         public DbSet<Sign> Signs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Event> Events { get; set; }
-        public DbSet<Organizer> Organizers { get; set; }
+        public DbSet<Organizers> Organizers { get; set; }
     }
 }
