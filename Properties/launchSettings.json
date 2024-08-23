@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "A1": {
+    "A2": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
