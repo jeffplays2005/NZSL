@@ -1,4 +1,5 @@
 ﻿using A2_jji134.Data;
+using A2_jji134.Dtos;
 using A2_jji134.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,10 @@ namespace A2_jji134.Controllers
             }
         }
 
-        
+        [HttpGet("PurchaseSign/{id}")]
+        public ActionResult<PurchaseOutputDto> PurchaseSign()
+        {
+
+        }
     }
 }
