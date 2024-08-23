@@ -1,5 +1,4 @@
-﻿
-using A2_jji134.Models;
+﻿using A2_jji134.Models;
 
 namespace A2_jji134.Data
 {
@@ -14,6 +13,7 @@ namespace A2_jji134.Data
         IEnumerable<Organizer> GetAllOrganizers();
         Organizer GetOrganizerByName(string name);
         Organizer AddOrganizer(Organizer newOrganizer);
+        bool ValidOrganizerLogin(string user, string password);
 
         // Sign stuff
         IEnumerable<Sign> GetAllSigns();
@@ -24,5 +24,6 @@ namespace A2_jji134.Data
         IEnumerable<User> GetAllUsers();
         User GetUserByName(string name);
         User AddUser(User newUser);
+        bool ValidUserLogin(string userName, string password);
     }
 }
