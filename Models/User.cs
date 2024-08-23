@@ -2,7 +2,7 @@
 
 namespace A2_jji134.Models
 {
-    class User
+    public class User
     {
         [Key]
         public string UserName { get; set; }
