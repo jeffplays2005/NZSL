@@ -23,6 +23,13 @@ namespace A2_jji134
             builder.Services.AddAuthorization(options => {
                 options.AddPolicy("UserOnly", policy => policy.RequireClaim("user"));
                 options.AddPolicy("OrganizerOnly", policy => policy.RequireClaim("organizer"));
+                options.AddPolicy("HasAuth", policy => {
+                    policy.RequireAssertion(context => 
+                        context.User.HasClaim(c =>
+                            (c.Type == "user" || c.Type == "organizer")
+                        )
+                    );
+                });
             });
             builder.Services.AddSwaggerGen();
             var app = builder.Build();

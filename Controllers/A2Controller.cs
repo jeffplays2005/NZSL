@@ -81,5 +81,12 @@ namespace A2_jji134.Controllers
             return Ok("Success");
 
         }
+        [Authorize(AuthenticationSchemes = "MyAuthentication")]
+        [Authorize(Policy = "HasAuth")]
+        [HttpPost("EventCount")]
+        public ActionResult EventCount()
+        {
+            return Ok(_repo.GetAllEvents().Count());
+        }
     }
 }
