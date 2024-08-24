@@ -66,5 +66,21 @@ namespace A2_jji134.Data
             _dbContext.SaveChanges();
             return ee;
         }
+        public bool ValidUserLogin(string userName, string password){
+            User u = _dbContext.Users.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+            if (u == null){
+                return false;
+            } else {
+                return true;
+            }
+        }
+        public bool ValidOrganizerLogin(string name, string password){
+            Organizer u = _dbContext.Organizers.FirstOrDefault(c => c.Name == name && c.Password == password);
+            if (u == null){
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 }
