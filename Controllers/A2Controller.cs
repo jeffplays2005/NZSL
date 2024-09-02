@@ -88,5 +88,16 @@ namespace A2_jji134.Controllers
         {
             return Ok(_repo.GetAllEvents().Count());
         }
+        [Authorize(AuthenticationSchemes = "MyAuthentication")]
+        [Authorize(Policy = "HasAuth")]
+        [HttpGet("Event/{id}")]
+        public ActionResult GetEvent(int id)
+        {
+            Event foundEvent = _repo.GetEventById(id);
+            if(foundEvent == null){
+                return BadRequest($"Event {id} does not exist." );
+            }
+            return Ok("ee");
+        }
     }
 }
