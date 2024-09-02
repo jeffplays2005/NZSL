@@ -2,6 +2,7 @@
 using A2_jji134.Dtos;
 using A2_jji134.Models;
 using A2_jji134.Handler;
+using A2_jji134.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@ namespace A2_jji134.Controllers
         {
             _repo = repo;
         }
+        // Endpoint 1
         [HttpPost("Register")]
         public ActionResult Register(User user)
         {
@@ -32,6 +34,7 @@ namespace A2_jji134.Controllers
                 return Ok($"UserName {user.UserName} is not available.");
             }
         }
+        // Endpoint 2
         [Authorize(AuthenticationSchemes = "MyAuthentication")]
         [Authorize(Policy = "UserOnly")]
         [HttpGet("PurchaseSign/{id}")]
@@ -53,6 +56,7 @@ namespace A2_jji134.Controllers
                 SignID = lookupSign.Id
             };
         }
+        // Endpoint 3
         [Authorize(AuthenticationSchemes = "MyAuthentication")]
         [Authorize(Policy = "OrganizerOnly")]
         [HttpPost("AddEvent")]
@@ -81,12 +85,27 @@ namespace A2_jji134.Controllers
             return Ok("Success");
 
         }
+        // Endpoint 4
         [Authorize(AuthenticationSchemes = "MyAuthentication")]
         [Authorize(Policy = "HasAuth")]
         [HttpPost("EventCount")]
         public ActionResult EventCount()
         {
             return Ok(_repo.GetAllEvents().Count());
+        }
+        // Endpoint 5
+        [Authorize(AuthenticationSchemes = "MyAuthentication")]
+        [Authorize(Policy = "HasAuth")]
+        [HttpGet("Event/{id}")]
+        public ActionResult GetEvent(int id)
+        {
+            Event foundEvent = _repo.GetEventById(id);
+            if(foundEvent == null){
+                return BadRequest($"Event {id} does not exist." );
+            }
+            // Need to use the CalendarOutputFormatter
+            Response.Headers.Add("Content-Type", "text/calendar");
+            return Ok(foundEvent);
         }
     }
 }

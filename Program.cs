@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using A2_jji134.Data;
+using A2_jji134.Helper;
 using A2_jji134.Handler;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ namespace A2_jji134
         static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<A2DbContext>(options => 
+            builder.Services.AddDbContext<A2DbContext>(options =>
                 options.UseSqlite(builder.Configuration["A2DBConnection"])
             );
             builder.Services.AddControllers();
@@ -24,13 +25,16 @@ namespace A2_jji134
                 options.AddPolicy("UserOnly", policy => policy.RequireClaim("user"));
                 options.AddPolicy("OrganizerOnly", policy => policy.RequireClaim("organizer"));
                 options.AddPolicy("HasAuth", policy => {
-                    policy.RequireAssertion(context => 
+                    policy.RequireAssertion(context =>
                         context.User.HasClaim(c =>
                             (c.Type == "user" || c.Type == "organizer")
                         )
                     );
                 });
             });
+            builder.Services.AddMvc(options =>
+                options.OutputFormatters.Add(new CalendarOutputFormatter())
+            );
             builder.Services.AddSwaggerGen();
             var app = builder.Build();
             app.UseHttpsRedirection();
