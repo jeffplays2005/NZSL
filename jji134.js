@@ -1,15 +1,16 @@
 /**
  * Version methods
  */
+// Gets the version
 async function getVersion() {
   const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/Version`);
   const data = await response.text();
   return data;
 }
-function showVersion() {
-  getVersion().then((data) => {
-    document.getElementById("version").innerText = data;
-  });
+// Sets the html version with the version fetched
+async function showVersion() {
+  const versionText = await getVersion(); // Get the version with method
+  document.getElementById("version").innerText = versionText; // Set the text to the version
 }
 
 /**
@@ -85,6 +86,53 @@ function parseVcalendar(calendar) {
   };
 }
 
+/**
+ * Comment methods
+ */
+async function getAllComments() {
+  const response = fetch(`https://cws.auckland.ac.nz/nzsl/api/Comments`);
+  const data = await response.text();
+  return data;
+}
+function displayComments() {}
+
+/**
+ * Auth methods
+ */
+async function register(username, password, address) {
+  const response = fetch(`https://cws.auckland.ac.nz/nzsl/api/Register`, {
+    body: JSON.stringify({ username, password, address }),
+    method: "POST",
+  });
+  const data = await response.text();
+  // Can directly return the data and let the outer methods check the message
+  // This endpoint returns 200 regardless of conflicts or success
+  return data;
+}
+async function login(username, password) {
+  const response = fetch(`https://cws.auckland.ac.nz/nzsl/api/TestAuth`, {
+    headers: {
+      Authorization: `Basic ${convertToBase64(username, password)}`,
+    },
+  });
+  if (response.status !== 200) {
+    throw new Error("Invalid login. ");
+  }
+  // Set cookies or something
+  return true;
+}
+function logout() {
+  return clearSession();
+}
+function convertToBase64(username, password) {
+  return Buffer.from(`${username}:${password}`).toString("base64");
+}
+function storeSession(key, value) {
+  return localStorage.setItem(key, value);
+}
+function clearSession() {
+  return localStorage.clear();
+}
 // if (response.status == 200) {
 //   data = await response.json();
 //   console.log(data);
