@@ -49,6 +49,7 @@ nav ul {
     gap: 0.5vw;
     display: flex;
     flex-direction: row;
+    flex-shrink: 1;
     align-items: center;
     list-style-type: none; /* remove bullet points */
 }
@@ -59,6 +60,7 @@ nav ul p {
 
 nav li {
     text-align: center;
+    padding: 0.5em;
 }
 
 nav li a {
@@ -66,11 +68,10 @@ nav li a {
     text-align: center;
     text-decoration: none;
     font-size: 1em;
-    padding: 0.5em;
 }
 
 /* Change the link color to #111 (black) on hover */
-nav li a:hover {
+nav li:hover {
     background-color: grey;
     border-radius: 0.5em;
     padding: 0.5em;
