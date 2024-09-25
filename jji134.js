@@ -181,28 +181,36 @@ function clearSession() {
 //   signElement.textContent = ``;
 // }
 
-function showSection(section) {
+async function showSection(section) {
   const sections = document.querySelectorAll("section");
   sections.forEach((section) => {
     section.style.display = "none";
   });
+  if (section == "nzsl") {
+    let signDiv = document.getElementById("nzsl-signs");
+    signDiv.innerText = "";
+    createSearchListener();
+    const signs = await fetchNZSLsigns("");
+    signDiv = document.getElementById("nzsl-signs");
+    const formattedSigns = formatSigns(signs);
+    signDiv.innerHTML = formattedSigns;
+  }
   document.getElementById(section).style.display = "block";
 }
 
 function createSearchListener() {
   const input = document.getElementById("nzsl-search");
-  input.addEventListener("input", async (event) => {
-    const term = event.target.text;
-    const signs = await fetchNZSLsigns(term);
-    console.log(signs);
-    const signDiv = document.getElementById("nzsl-signs");
-    const formattedSigns = formatSigns(signs);
-    console.log(formattedSigns);
-    signDiv.innerHTML = formattedSigns;
-  });
+  if (input) {
+    input.addEventListener("input", async (event) => {
+      const term = event.target.value;
+      const signs = await fetchNZSLsigns(term);
+      const signDiv = document.getElementById("nzsl-signs");
+      const formattedSigns = formatSigns(signs);
+      signDiv.innerHTML = formattedSigns;
+    });
+  }
 }
 
 // Add search bar logic
 // Show version at footer
 showVersion();
-createSearchListener();
