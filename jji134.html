@@ -18,17 +18,72 @@
             </h2>
         </header>
         <ul>
-            <li><a href="#">🏠 Home</a></li>
-            <li><a href="#">📖 NZSL</a></li>
-            <li><a href="#">📅 Events</a></li>
-            <li><a href="#">👪 User Registration</a></li>
-            <li><a href="#">✍ Guest Book</a></li>
+            <li onclick="showSection('home')">🏠 Home</li>
+            <li onclick="showSection('nzsl')">📖 NZSL</li>
+            <li onclick="showSection('events')">📅 Events</li>
+            <li onclick="showSection('login')">👪 Login</li>
+            <li onclick="showSection('register')">📝 Register</li>
+            <li onclick="showSection('guest-book')">✍ Guest Book</li>
         </ul>
     </nav>
     <!-- Body -->
     <div class="main">
-        <section></section>
-        e
+        <section id="home">
+            <div class="content">
+                <h1>Welcome to the New Zealand Sign Language Web</h1>
+                <br />
+                <p>Explore and learn New Zealand Sign Language, NZSL (Te Reo Turi) with our easy-to-use application!</p>
+                <p>The web app aims to design and develop a web application to assist beginners in learning NZSL.</p>
+                <br />
+                <ol>
+                    <li>
+                        <h3>Home page</h3>
+                        <br />
+                        Displays a brief description of this page and the version of the server.
+                    </li>
+                    <br />
+                    <li>
+                        <h3>NZSL</h3>
+                        <br />
+                        <p>Shows all the different NZSL signs and their meanings. </p>
+                        <p>This page also has a search bar option!</p>
+                    </li>
+                    <br />
+                    <li>
+                        <h3>Events</h3>
+                        <br />
+                        <p>This section shows to the user a list of events as supplied by the server.</p>
+                        <p>The user is able to add selected events to your favourite calendar application!</p>
+                    </li>
+                    <br />
+                    <li>
+                        <h3>Login • register</h3>
+                        <br />
+                        Create an account on the NZSL server to post comments!
+                    </li>
+                    <br />
+                    <li>
+                        <h3>Guest book</h3>
+                        <br />
+                        <p>This section shows recent comments from the users.</p>
+                        <p>It also allows registered users to enter comments!</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+        <section id="nzsl" style="display: none">
+            <div class="content">
+                <h1>NZSL Signs</h1>
+                <br/>
+                <input id="nzsl-search" placeholder="Search for a sign here!" />
+                <div id="nzsl-signs"></div>
+            </div>
+        </section>
+        <section id="events" style="display: none"></section>
+        <section id="login" style="display: none"></section>
+        <section id="register" style="display: none"></section>
+        <section id="logout" style="display: none"></section>
+        <section id="guest-book" style="display: none"></section>
     </div>
     <!-- <div>
         <input type="text" placeholder="Enter some text" id="search-bar" name="name" />

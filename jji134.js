@@ -32,6 +32,19 @@ async function fetchNZSLsigns(term) {
     };
   });
 }
+function formatSigns(signs) {
+  return signs
+    .map((sign) => {
+      return `<div class="sign">
+      <div>
+        ${sign.id}
+        ${sign.description}
+      </div>
+      <img src="${sign.image}"/>
+    </div>`;
+    })
+    .join("\n");
+}
 
 /**
  * Event methods
@@ -168,7 +181,28 @@ function clearSession() {
 //   signElement.textContent = ``;
 // }
 
-// const input = document.getElementById("search-bar");
+function showSection(section) {
+  const sections = document.querySelectorAll("section");
+  sections.forEach((section) => {
+    section.style.display = "none";
+  });
+  document.getElementById(section).style.display = "block";
+}
 
-// input.addEventListener("input", fetchNZSLsigns);
+function createSearchListener() {
+  const input = document.getElementById("nzsl-search");
+  input.addEventListener("input", async (event) => {
+    const term = event.target.text;
+    const signs = await fetchNZSLsigns(term);
+    console.log(signs);
+    const signDiv = document.getElementById("nzsl-signs");
+    const formattedSigns = formatSigns(signs);
+    console.log(formattedSigns);
+    signDiv.innerHTML = formattedSigns;
+  });
+}
+
+// Add search bar logic
+// Show version at footer
 showVersion();
+createSearchListener();
