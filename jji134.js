@@ -45,6 +45,10 @@ function formatSigns(signs) {
     })
     .join("\n");
 }
+function displaySigns(signHTML) {
+  const signDiv = document.getElementById("nzsl-signs");
+  signDiv.innerHTML = signHTML;
+}
 
 /**
  * Event methods
@@ -54,38 +58,18 @@ async function getNumberEvents() {
     `https://cws.auckland.ac.nz/nzsl/api/EventCount`,
   );
   const data = await response.text();
-  return parseInt(data.result);
+  return parseInt(data);
 }
-
-async function getEvents(eventCount) {
-  eventOutput = [];
-  for (let i = 0; i < eventCount; i++) {
-    const response = await fetch(
-      `https://cws.auckland.ac.nz/nzsl/api/Event/1`,
-      {
-        headers: { Accept: "text/plain" },
-      },
-    );
-    const data = await response.text();
-    eventOutput.push(data);
-  }
-  return eventOutput;
+async function getEvent(eventID) {
+  const response = await fetch(
+    `https://cws.auckland.ac.nz/nzsl/api/Event/${eventID}`,
+    {
+      headers: { Accept: "text/plain" },
+    },
+  );
+  const data = await response.text();
+  return data;
 }
-
-//0: BEGIN:VCALENDAR
-//1: VERSION:2.0
-//2: PRODID:-//NSDS//EN
-//3: BEGIN:VEVENT
-//4: UID:20240903T010000Z@NZDS
-//5: DTSTAMP:20240903T010000Z
-//6: DTSTART:20240903T010000Z
-//7: DTEND:20240903T020000Z
-//8: TZID:Pacific/Auckland
-//9: SUMMARY:Colours Galore
-//10: DESCRIPTION:This event is to celbrate the colours in our lives. Bring the Whānau and plenty of pastels.
-//11: LOCATION:Ōtāhuhu
-// END:VEVENT
-// END:VCALENDAR
 function parseVcalendar(calendar) {
   const splitted = calendar.split("\n").map((x) => x.split(":")[1]);
   return {
@@ -97,6 +81,35 @@ function parseVcalendar(calendar) {
     description: splitted[10],
     lcocation: splitted[11],
   };
+}
+async function getEvents(eventCount) {
+  eventOutput = [];
+  for (let i = 0; i < eventCount; i++) {
+    const fetchedEvent = await getEvent(eventCount);
+    const parsedCalendar = parseVcalendar(fetchedEvent);
+    eventOutput.push(parsedCalendar);
+  }
+  return eventOutput;
+}
+async function displayEvents() {
+  const eventCount = await getNumberEvents();
+  const allEvents = await getEvents(eventCount);
+  const formattedEventHTML = formatEvents(allEvents);
+  const eventDiv = document.getElementById("nzsl-events");
+  eventDiv.innerHTML = formattedEventHTML;
+  console.log(allEvents);
+}
+function formatEvents(events) {
+  return events.map((event) => {
+    return `<div class="event">
+      <h2>${event.summary} - ${event.uid}</h2>
+      <i>${event.id}</i>
+      Description: ${event.description}
+      Location: ${event.lcocation}
+      Starts: ${event.start}
+      Ends: ${event.end}
+  </div>`;
+  });
 }
 
 /**
@@ -185,13 +198,16 @@ async function showSection(section) {
     sect.style.display = "none";
   });
   if (section == "nzsl") {
+    // Reset the search bar
     const searchBar = document.getElementById("nzsl-search");
     searchBar.value = "";
-
+    // Fetch all the signs
     const signs = await fetchNZSLsigns("");
-    signDiv = document.getElementById("nzsl-signs");
     const formattedSigns = formatSigns(signs);
-    signDiv.innerHTML = formattedSigns;
+    displaySigns(formattedSigns);
+  }
+  if (section == "events") {
+    displayEvents();
   }
   document.getElementById(section).style.display = "block";
 }
@@ -201,9 +217,8 @@ function createSearchListener() {
   input.addEventListener("input", async (event) => {
     const term = event.target.value;
     const signs = await fetchNZSLsigns(term);
-    const signDiv = document.getElementById("nzsl-signs");
     const formattedSigns = formatSigns(signs);
-    signDiv.innerHTML = formattedSigns;
+    displaySigns(formattedSigns);
   });
 }
 // Responsive navbar
