@@ -509,12 +509,12 @@ async function showSection(section) {
   if (section == "guest-book") {
     displayComments();
   }
-  // Display the section requested
-  document.getElementById(section).style.display = "block";
   // Hide all authenticated stuff
   checkSession();
   // Reset all errors
   resetStatusMessages();
+  // Display the section requested
+  document.getElementById(section).style.display = "block";
 }
 
 /**
