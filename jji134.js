@@ -222,7 +222,8 @@ async function submitRegister(event) {
   console.log(output);
   if (output == "Username not available") {
     showSection("register");
-    document.getElementById("errors").innerText = "Username not available";
+    document.getElementById("register-errors").innerText =
+      "Username not available";
   } else {
     showSection("login");
     document.getElementById("success").innerText = "Successfully registered!";
@@ -260,7 +261,7 @@ async function submitLogin(event) {
     showSection("home");
   } else {
     showSection("login");
-    document.getElementById("errors").innerText = "Invalid login.";
+    document.getElementById("login-errors").innerText = "Invalid login.";
   }
 }
 
@@ -315,8 +316,9 @@ async function showSection(section) {
   if (section == "guest-book") {
     displayComments();
   }
+  // Display the section requested
   document.getElementById(section).style.display = "block";
-  // Hide all authd stuff
+  // Hide all authenticated stuff
   if (getSession(CREDENTIAL_KEY) !== null) {
     document.getElementById("login-li").style.display = "none";
     document.getElementById("register-li").style.display = "none";
@@ -326,6 +328,11 @@ async function showSection(section) {
     document.getElementById("register-li").style.display = "block";
     document.getElementById("logout-li").style.display = "none";
   }
+  // Reset all errors
+  document.getElementById("login-errors").innerText = "";
+  document.getElementById("register-errors").innerText = "";
+  document.getElementById("comment-errors").innerText = "";
+  document.getElementById("success").innerText = "";
 }
 
 function createSearchListener() {
@@ -337,18 +344,9 @@ function createSearchListener() {
     displaySigns(formattedSigns);
   });
 }
-// Responsive navbar
-// function myFunction() {
-//   var x = document.getElementById("nav");
-//   if (x.className === "navbar") {
-//     x.className += " responsive";
-//   } else {
-//     x.className = "navbar";
-//   }
-// }
-// Add search bar logic
 // Show version at footer
 showVersion();
+// Add searchbar listener
 createSearchListener();
 // Hide all authd stuff
 document.getElementById("logout-li").style.display = "none";
