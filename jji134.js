@@ -1,14 +1,25 @@
-const CREDENTIAL_KEY = "credentials";
+/**
+ * Constants
+ */
+const CREDENTIAL_KEY = "credentials"; // The constant key for credentials in session data
+
 /**
  * Version methods
  */
-// Gets the version
+
+/**
+ * Fetches the version of the NZSL API
+ * @returns {Promise<string>} - The version of the API
+ */
 async function getVersion() {
   const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/Version`);
-  const data = await response.text();
-  return data;
+  const versionText = await response.text();
+  return versionText;
 }
-// Sets the html version with the version fetched
+
+/**
+ * Sets the html version with the version fetched.
+ */
 async function showVersion() {
   const versionText = await getVersion(); // Get the version with method
   document.getElementById("version").innerText = versionText; // Set the text to the version
@@ -17,15 +28,15 @@ async function showVersion() {
 /**
  * Sign methods
  */
-async function fetchNZSLsigns(term) {
-  let response;
-  if (!term) {
-    response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/AllSigns`);
-  } else {
-    response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/Signs/${term}`);
-  }
-  const data = await response.json();
-  return data.map((sign) => {
+
+/**
+ * Fetches all NZSL signs
+ * @returns {Promise<Array>} - The array of signs
+ */
+async function fetchAllNZSLSigns() {
+  const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/AllSigns`);
+  const signsData = await response.json();
+  return signsData.map((sign) => {
     return {
       description: sign.description,
       id: sign.id,
@@ -33,6 +44,43 @@ async function fetchNZSLsigns(term) {
     };
   });
 }
+
+/**
+ * Fetches NZSL signs by term
+ * @param {string} term - The term to search for
+ * @returns {Promise<Array>} - The array of signs
+ */
+async function fetchNZSLSignsByTerm(term) {
+  const response = await fetch(
+    `https://cws.auckland.ac.nz/nzsl/api/Signs/${term}`,
+  );
+  const signsData = await response.json();
+  return signsData.map((sign) => {
+    return {
+      description: sign.description,
+      id: sign.id,
+      image: `https://cws.auckland.ac.nz/nzsl/api/SignImage/${sign.id}`,
+    };
+  });
+}
+
+/**
+ * Fetches signs and returns the correct function to return either all signs or a search by the term.
+ * @param {Promise<string>} term - The term to search for
+ */
+async function fetchNZSLSigns(term) {
+  if (!term || term == "") {
+    return await fetchAllNZSLSigns();
+  } else {
+    return await fetchNZSLSignsByTerm(term);
+  }
+}
+
+/**
+ * Formats the signs and returns the formatted HTML.
+ * @param {Array} signs - The array of signs
+ * @returns {string} - The formatted HTML
+ */
 function formatSigns(signs) {
   return signs
     .map((sign) => {
@@ -46,6 +94,11 @@ function formatSigns(signs) {
     })
     .join("\n");
 }
+
+/**
+ * Displays the signs in the HTML
+ * @param {string} signHTML - The HTML to display
+ */
 function displaySigns(signHTML) {
   const signDiv = document.getElementById("nzsl-signs");
   signDiv.innerHTML = signHTML;
@@ -54,6 +107,11 @@ function displaySigns(signHTML) {
 /**
  * Event methods
  */
+
+/**
+ * Fetches the number of events.
+ * @returns {Promise<number>} - The number of events
+ */
 async function getNumberEvents() {
   const response = await fetch(
     `https://cws.auckland.ac.nz/nzsl/api/EventCount`,
@@ -61,6 +119,12 @@ async function getNumberEvents() {
   const data = await response.text();
   return parseInt(data);
 }
+
+/**
+ * Fetches an event by ID.
+ * @param {number} eventID - The event ID
+ * @returns {Promise<string>} - The event data in plain text
+ */
 async function getEvent(eventID) {
   const response = await fetch(
     `https://cws.auckland.ac.nz/nzsl/api/Event/${eventID}`,
@@ -71,6 +135,13 @@ async function getEvent(eventID) {
   const data = await response.text();
   return data;
 }
+
+/**
+ * Parses the date string and returns the parsed date.
+ * Converts the ISO date into NZ time.
+ * @param {string} dateString - The date string
+ * @returns {string} - The parsed date
+ */
 function functionParseDate(dateString) {
   // 2024-09-03T01:00:00Z
   const year = dateString.substring(0, 4); // 2024
@@ -82,13 +153,20 @@ function functionParseDate(dateString) {
   const newDate = new Date(
     `${year}-${month}-${day}T${hour}:${minutes}:${seconds}Z`,
   );
-  return newDate.toLocaleString();
+  return newDate.toLocaleString([], { timeZone: "Pacific/Auckland" });
 }
+
+/**
+ * Parses the vcalendar data and returns the parsed data.
+ * @param {string} calendar - The calendar data
+ * @param {number} id - The event ID
+ * @returns {Object} - The parsed data
+ */
 function parseVcalendar(calendar, id) {
   const splitted = calendar.split("\n").map((x) => x.split(":")[1]);
   return {
-    start: functionParseDate(splitted[6]),
-    end: functionParseDate(splitted[7]),
+    start: functionParseDate(splitted[6], splitted[8]),
+    end: functionParseDate(splitted[7], splitted[8]),
     timezone: splitted[8],
     summary: splitted[9],
     description: splitted[10],
@@ -96,6 +174,12 @@ function parseVcalendar(calendar, id) {
     url: `https://cws.auckland.ac.nz/nzsl/api/Event/${id}`,
   };
 }
+
+/**
+ * Fetches all events and returns the parsed events.
+ * @param {number} eventCount - The number of events
+ * @returns {Promise<Array>} - The array of parsed events
+ */
 async function getEvents(eventCount) {
   const eventOutput = [];
   for (let i = 0; i < eventCount; i++) {
@@ -105,17 +189,12 @@ async function getEvents(eventCount) {
   }
   return eventOutput;
 }
-async function displayEvents() {
-  // Fetch event count
-  const eventCount = await getNumberEvents();
-  // Fetch all events and returns a list of parsed events
-  const allEvents = await getEvents(eventCount);
-  // Convert the data to HTML
-  const formattedEventHTML = formatEvents(allEvents);
-  // Display the events html
-  const eventDiv = document.getElementById("nzsl-events");
-  eventDiv.innerHTML = formattedEventHTML;
-}
+
+/**
+ * Formats the events and returns the formatted HTML.
+ * @param {Array} events - The array of events
+ * @returns {string} - The formatted HTML
+ */
 function formatEvents(events) {
   return events
     .map((event) => {
@@ -138,17 +217,47 @@ function formatEvents(events) {
 }
 
 /**
+ * Displays the events in the HTML
+ */
+async function displayEvents() {
+  // Fetch event count
+  const eventCount = await getNumberEvents();
+  // Fetch all events and returns a list of parsed events
+  const allEvents = await getEvents(eventCount);
+  // Convert the data to HTML
+  const formattedEventHTML = formatEvents(allEvents);
+  // Display the events html
+  const eventDiv = document.getElementById("nzsl-events");
+  eventDiv.innerHTML = formattedEventHTML;
+}
+
+/**
  * Comment methods
+ */
+
+/**
+ * Fetches all comments and returns the comments.
+ * @returns {Promise<string>} - The comments in plain text
  */
 async function getAllComments() {
   const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/Comments`);
   const data = await response.text();
   return data;
 }
+
+/**
+ * Displays the comments in the HTML
+ */
 async function displayComments() {
   const commentsDiv = document.getElementById("nzsl-comments");
   commentsDiv.innerHTML = await getAllComments();
 }
+
+/**
+ * Adds a comment to the server.
+ * @param {string} comment - The comment to add
+ * @returns {Promise<string>} - The response from the server
+ */
 async function addComment(comment) {
   try {
     const response = await fetch(
@@ -166,6 +275,11 @@ async function addComment(comment) {
     throw new Error("An error occurred.");
   }
 }
+
+/**
+ * The form submission method to create a comment.
+ * @param {Event} event - The form submission event
+ */
 async function submitComment(event) {
   event.preventDefault();
   // Check for auth
@@ -188,8 +302,19 @@ async function submitComment(event) {
     document.getElementById("comment-errors").innerText = "An error occurred.";
   }
 }
+
 /**
  * Auth methods
+ */
+
+/**
+ * Registers a new user.
+ * Note that the endpoint returns 200 regardless of a conflicted username or success.
+ * Can directly return the data and let the outer methods check the message.
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @param {string} address - The address
+ * @returns {Promise<string>} - The response from the server
  */
 async function register(username, password, address) {
   const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/Register`, {
@@ -204,10 +329,13 @@ async function register(username, password, address) {
     },
   });
   const data = await response.text();
-  // Can directly return the data and let the outer methods check the message
-  // This endpoint returns 200 regardless of conflicts or success
   return data;
 }
+
+/**
+ * The form submission method to register a user.
+ * @param {Event} event - The form submission event
+ */
 async function submitRegister(event) {
   event.preventDefault();
   // Check for auth
@@ -229,6 +357,13 @@ async function submitRegister(event) {
     document.getElementById("success").innerText = "Successfully registered!";
   }
 }
+
+/**
+ * Logs in a user.
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @returns {Promise<boolean>} - The response from the server
+ */
 async function login(username, password) {
   try {
     const response = await fetch(
@@ -245,6 +380,11 @@ async function login(username, password) {
   } catch (e) {}
   return false;
 }
+
+/**
+ * The form submission method to test a users authentication.
+ * @param {Event} event - The form submission event
+ */
 async function submitLogin(event) {
   event.preventDefault();
   // Check for auth
@@ -261,37 +401,62 @@ async function submitLogin(event) {
     showSection("home");
   } else {
     showSection("login");
-    document.getElementById("login-errors").innerText = "Invalid login.";
+    document.getElementById("login-errors").innerText =
+      "Username or password was invalid.";
   }
 }
 
+/**
+ * Logs out the user and redirects to the login page after.
+ */
 async function logout() {
   await clearSession();
   return showSection("login");
 }
+
+/**
+ * Helper methods
+ */
+
+/**
+ * Converts a username and password to base64.
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @returns {string} - The base64 encoded string
+ */
 function convertToBase64(username, password) {
   return btoa(`${username}:${password}`);
 }
+
+/**
+ * Stores a session in local storage.
+ * @param {string} key - The key to store the session under
+ * @param {string} value - The value to store
+ */
 function storeSession(key, value) {
   return localStorage.setItem(key, value);
 }
+
+/**
+ * Gets a session from local storage.
+ * @param {string} key - The key to get the session from
+ * @returns The value of the session
+ */
 function getSession(key) {
   return localStorage.getItem(key);
 }
-async function clearSession() {
+
+/**
+ * Clears the session from local storage.
+ */
+function clearSession() {
   return localStorage.clear();
 }
-// if (response.status == 200) {
-//   data = await response.json();
-//   console.log(data);
-//   const signElement = document.getElementById("output");
-//   signElement.textContent = `${data.map((sign) => `${sign.description}`).join("\n")}`;
-// } else if (response.status == 404) {
-//   const signElement = document.getElementById("output");
-//   signElement.textContent = `${data.map((sign) => `${sign.description}`).join("\n")}`;
-//   signElement.textContent = ``;
-// }
 
+/**
+ * The main method to show a section.
+ * @param {string} section - The section to show
+ */
 async function showSection(section) {
   const sections = document.querySelectorAll("section");
   sections.forEach((sect) => {
@@ -306,7 +471,7 @@ async function showSection(section) {
     const searchBar = document.getElementById("nzsl-search");
     searchBar.value = "";
     // Fetch all the signs
-    const signs = await fetchNZSLsigns("");
+    const signs = await fetchNZSLSigns("");
     const formattedSigns = formatSigns(signs);
     displaySigns(formattedSigns);
   }
@@ -335,24 +500,33 @@ async function showSection(section) {
   document.getElementById("success").innerText = "";
 }
 
+/**
+ * The method to create the search bar listener to actively shrink the results of signs.
+ */
 function createSearchListener() {
   const input = document.getElementById("nzsl-search");
   input.addEventListener("input", async (event) => {
     const term = event.target.value;
-    const signs = await fetchNZSLsigns(term);
+    const signs = await fetchNZSLSigns(term);
     const formattedSigns = formatSigns(signs);
     displaySigns(formattedSigns);
   });
 }
+
 // Show version at footer
 showVersion();
 // Add searchbar listener
 createSearchListener();
-// Hide all authd stuff
+// Hide all authenticated buttons
 document.getElementById("logout-li").style.display = "none";
+// Hide all authenticated stuff, this just ensures that the correct buttons are displayed.
 if (getSession(CREDENTIAL_KEY) !== null) {
   document.getElementById("login-li").style.display = "none";
   document.getElementById("register-li").style.display = "none";
   document.getElementById("logout-li").style.display = "block";
+} else {
+  document.getElementById("login-li").style.display = "block";
+  document.getElementById("register-li").style.display = "block";
+  document.getElementById("logout-li").style.display = "none";
 }
 showSection("home");
