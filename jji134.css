@@ -111,6 +111,14 @@ body {
 .main {
     flex-grow: 1;
 }
+
+#status {
+    padding-left: 1em;
+    padding-right: 1em;
+    font-size: 1.5em;
+    color: white;
+}
+
 section {
     display: flex;
     flex-direction: column;
