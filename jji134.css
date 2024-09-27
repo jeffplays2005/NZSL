@@ -167,11 +167,15 @@ section {
 #nzsl-events {
     display: flex;
     flex-direction: column;
+    gap: 0.5em;
+    margin-top: 1em;
 }
 #nzsl-events .event {
     background-color: white;
     color: black;
     border-radius: 0.5em;
+    padding: 1em;
+    transition: 500ms;
 }
 #nzsl-events .event:hover {
     background-color: black;

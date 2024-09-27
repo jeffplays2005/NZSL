@@ -70,46 +70,71 @@ async function getEvent(eventID) {
   const data = await response.text();
   return data;
 }
-function parseVcalendar(calendar) {
+function functionParseDate(dateString) {
+  // 2024-09-03T01:00:00Z
+  const year = dateString.substring(0, 4); // 2024
+  const month = dateString.substring(4, 6); // 09
+  const day = dateString.substring(6, 8); // 03
+  const hour = dateString.substring(9, 11); // 01
+  const minutes = dateString.substring(11, 13); // 00
+  const seconds = dateString.substring(13, 15); // 00
+  const newDate = new Date(
+    `${year}-${month}-${day}T${hour}:${minutes}:${seconds}Z`,
+  );
+  return newDate.toLocaleString();
+}
+function parseVcalendar(calendar, id) {
   const splitted = calendar.split("\n").map((x) => x.split(":")[1]);
+  console.log(splitted);
   return {
-    uid: splitted[4],
-    start: splitted[6],
-    end: splitted[7],
+    start: functionParseDate(splitted[6]),
+    end: functionParseDate(splitted[7]),
     timezone: splitted[8],
     summary: splitted[9],
     description: splitted[10],
     lcocation: splitted[11],
+    url: `https://cws.auckland.ac.nz/nzsl/api/Event/${id}`,
   };
 }
 async function getEvents(eventCount) {
-  eventOutput = [];
+  const eventOutput = [];
   for (let i = 0; i < eventCount; i++) {
-    const fetchedEvent = await getEvent(eventCount);
-    const parsedCalendar = parseVcalendar(fetchedEvent);
+    const fetchedEvent = await getEvent(i);
+    const parsedCalendar = parseVcalendar(fetchedEvent, i);
     eventOutput.push(parsedCalendar);
   }
   return eventOutput;
 }
 async function displayEvents() {
+  // Fetch event count
   const eventCount = await getNumberEvents();
+  // Fetch all events and returns a list of parsed events
   const allEvents = await getEvents(eventCount);
+  // Convert the data to HTML
   const formattedEventHTML = formatEvents(allEvents);
+  // Display the events html
   const eventDiv = document.getElementById("nzsl-events");
   eventDiv.innerHTML = formattedEventHTML;
-  console.log(allEvents);
 }
 function formatEvents(events) {
-  return events.map((event) => {
-    return `<div class="event">
-      <h2>${event.summary} - ${event.uid}</h2>
-      <i>${event.id}</i>
-      Description: ${event.description}
-      Location: ${event.lcocation}
-      Starts: ${event.start}
-      Ends: ${event.end}
+  return events
+    .map((event) => {
+      return `<div class="event">
+      <h2>${event.summary}</h2>
+      <a href="${event.url}">
+        <button>Click to download event</button>
+      </a>
+      <br/>
+      <strong>Description</strong>: ${event.description}
+      <br/>
+      <strong>Location</strong>: ${event.lcocation}
+      <br/>
+      <strong>Starts</strong>: ${event.start}
+      <br/>
+      <strong>Ends</strong>: ${event.end}
   </div>`;
-  });
+    })
+    .join("\n");
 }
 
 /**
