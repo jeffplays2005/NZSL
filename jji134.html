@@ -30,9 +30,9 @@
                 <a class="link" onclick="showSection('nzsl')" id="nzsl-li">📖 NZSL</a>
                 <a class="link" onclick="showSection('events')" id="events-li">📅 Events</a>
                 <a class="link" onclick="showSection('login')" id="login-li">👪 Login</a>
-                <a class="link" onclick="logout()" id="logout-li">↩ Logout</a>
                 <a class="link" onclick="showSection('register')" id="register-li">📝 Register</a>
-                <a class="link" onclick="showSection('guest-book')" id="guest-book-li">✍ Guest Book</a>
+                <a class="link" onclick="showSection('guest-book')" id="guest-book-li">📖 Guest Book</a>
+                <a class="link" onclick="logout()" id="logout-li">🔓 Logout</a>
             </div>
         </div>
     </nav>
@@ -81,7 +81,7 @@
                 </ol>
             </div>
         </section>
-        <section id="nzsl" style="display: none">
+        <section id="nzsl">
             <div class="content">
                 <h1>NZSL Signs</h1>
                 <br/>
@@ -89,24 +89,25 @@
                 <div id="nzsl-signs"></div>
             </div>
         </section>
-        <section id="events" style="display: none">
+        <section id="events">
             <div class="content">
                 <h1>Events</h1>
                 <div id="nzsl-events"></div>
             </div>
         </section>
-        <section id="login" style="display: none">
+        <section id="login">
             <div class="content">
                 <h1>Login</h1>
                 <form id="loginform" onsubmit="submitLogin(event)">
                     <input id="username" name="username" placeholder="Your username" />
                     <input id="password" type="password" name="password" placeholder="Your password" />
                     <p id="errors" style="color:red;"></p>
+                    <p id="success" style="color:green;"></p>
                     <button type="submit">Submit</button>
                 </form>
             </div>
         </section>
-        <section id="register" style="display: none">
+        <section id="register">
             <div class="content">
                 <h1>Register</h1>
                 <form id="loginform" onsubmit="submitRegister(event)">
@@ -118,18 +119,18 @@
                 </form>
             </div>
         </section>
-        <section id="logout" style="display: none">
+        <section id="logout">
             <div class="content">
                 <h1>Logged out!</h1>
             </div>
         </section>
-        <section id="guest-book" style="display: none">
+        <section id="guest-book">
             <div class="content">
                 <h1>Guest book</h1>
                 <form id="commentForm" onsubmit="submitComment(event)">
                     <textarea id="comment" name="comment" placeholder="Your comment"></textarea>
+                    <p id="comment-errors" style="color:red;"></p>
                     <button type="submit">Submit</button>
-                    <p id="errors"></p>
                 </form>
                 <div id="nzsl-comments"></div>
             </div>

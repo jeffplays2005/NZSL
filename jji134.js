@@ -86,7 +86,6 @@ function functionParseDate(dateString) {
 }
 function parseVcalendar(calendar, id) {
   const splitted = calendar.split("\n").map((x) => x.split(":")[1]);
-  console.log(splitted);
   return {
     start: functionParseDate(splitted[6]),
     end: functionParseDate(splitted[7]),
@@ -151,17 +150,21 @@ async function displayComments() {
   commentsDiv.innerHTML = await getAllComments();
 }
 async function addComment(comment) {
-  const response = await fetch(
-    `https://cws.auckland.ac.nz/nzsl/api/Comment?comment=${comment}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${getSession(CREDENTIAL_KEY)}`,
+  try {
+    const response = await fetch(
+      `https://cws.auckland.ac.nz/nzsl/api/Comment?comment=${comment}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${getSession(CREDENTIAL_KEY)}`,
+        },
       },
-    },
-  );
-  const data = await response.text();
-  return data;
+    );
+    const data = await response.text();
+    return data;
+  } catch (e) {
+    throw new Error("An error occurred.");
+  }
 }
 async function submitComment(event) {
   event.preventDefault();
@@ -169,7 +172,6 @@ async function submitComment(event) {
   if (getSession(CREDENTIAL_KEY) == null) {
     return showSection("login");
   }
-  console.log(getSession(CREDENTIAL_KEY));
   const form = event.target;
   const formData = new FormData(form);
   // Convert form data to an object (optional, for easier use)
@@ -177,8 +179,14 @@ async function submitComment(event) {
   formData.forEach((value, key) => {
     data[key] = value;
   });
-  await addComment(data.comment);
-  showSection("guest-book");
+  try {
+    await addComment(data.comment);
+    return showSection("guest-book");
+  } catch (e) {
+    showSection("guest-book");
+    console.log("an error");
+    document.getElementById("comment-errors").innerText = "An error occurred.";
+  }
 }
 /**
  * Auth methods
@@ -199,6 +207,26 @@ async function register(username, password, address) {
   // Can directly return the data and let the outer methods check the message
   // This endpoint returns 200 regardless of conflicts or success
   return data;
+}
+async function submitRegister(event) {
+  event.preventDefault();
+  // Check for auth
+  const form = event.target;
+  const formData = new FormData(form);
+  // Convert form data to an object (optional, for easier use)
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+  const output = await register(data.username, data.password, data.address);
+  console.log(output);
+  if (output == "Username not available") {
+    showSection("register");
+    document.getElementById("errors").innerText = "Username not available";
+  } else {
+    showSection("login");
+    document.getElementById("success").innerText = "Successfully registered!";
+  }
 }
 async function login(username, password) {
   try {
@@ -227,7 +255,6 @@ async function submitLogin(event) {
     data[key] = value;
   });
   const output = await login(data.username, data.password);
-  console.log(output);
   if (output) {
     storeSession(CREDENTIAL_KEY, convertToBase64(data.username, data.password));
     showSection("home");
@@ -330,3 +357,4 @@ if (getSession(CREDENTIAL_KEY) !== null) {
   document.getElementById("register-li").style.display = "none";
   document.getElementById("logout-li").style.display = "block";
 }
+showSection("home");

@@ -49,6 +49,10 @@ body {
     gap: 0.5vw;
     padding: 0;
     width: 100%;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: row;
+    padding-right: 1em;
 }
 
 .navbar .links a {
@@ -183,6 +187,8 @@ section {
     flex-direction: column;
     gap: 1em;
     margin-top: 1em;
+    text-wrap: wrap;
+    word-break: break-all;
 }
 #nzsl-comments p {
     background-color: white;
@@ -190,6 +196,7 @@ section {
     border-radius: 0.5em;
     padding: 1em;
     transition: 500ms;
+    text-wrap: wrap;
 }
 #nzsl-comments p:hover {
     background-color: black;
