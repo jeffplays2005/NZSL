@@ -201,20 +201,45 @@ async function register(username, password, address) {
   return data;
 }
 async function login(username, password) {
-  const response = await fetch(`https://cws.auckland.ac.nz/nzsl/api/TestAuth`, {
-    headers: {
-      Authorization: `Basic ${convertToBase64(username, password)}`,
-    },
-  });
-  if (response.status === 200) {
-    return true;
-  }
+  try {
+    const response = await fetch(
+      `https://cws.auckland.ac.nz/nzsl/api/TestAuth`,
+      {
+        headers: {
+          Authorization: `Basic ${convertToBase64(username, password)}`,
+        },
+      },
+    );
+    if (response.status === 200) {
+      return true;
+    }
+  } catch (e) {}
   return false;
 }
-function submitLogin() {}
+async function submitLogin(event) {
+  event.preventDefault();
+  // Check for auth
+  const form = event.target;
+  const formData = new FormData(form);
+  // Convert form data to an object (optional, for easier use)
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+  const output = await login(data.username, data.password);
+  console.log(output);
+  if (output) {
+    storeSession(CREDENTIAL_KEY, convertToBase64(data.username, data.password));
+    showSection("home");
+  } else {
+    showSection("login");
+    document.getElementById("errors").innerText = "Invalid login.";
+  }
+}
 
-function logout() {
-  return clearSession();
+async function logout() {
+  await clearSession();
+  return showSection("login");
 }
 function convertToBase64(username, password) {
   return btoa(`${username}:${password}`);
@@ -225,7 +250,7 @@ function storeSession(key, value) {
 function getSession(key) {
   return localStorage.getItem(key);
 }
-function clearSession() {
+async function clearSession() {
   return localStorage.clear();
 }
 // if (response.status == 200) {
@@ -244,6 +269,10 @@ async function showSection(section) {
   sections.forEach((sect) => {
     sect.style.display = "none";
   });
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => {
+    form.reset();
+  });
   if (section == "nzsl") {
     // Reset the search bar
     const searchBar = document.getElementById("nzsl-search");
@@ -260,6 +289,16 @@ async function showSection(section) {
     displayComments();
   }
   document.getElementById(section).style.display = "block";
+  // Hide all authd stuff
+  if (getSession(CREDENTIAL_KEY) !== null) {
+    document.getElementById("login-li").style.display = "none";
+    document.getElementById("register-li").style.display = "none";
+    document.getElementById("logout-li").style.display = "block";
+  } else {
+    document.getElementById("login-li").style.display = "block";
+    document.getElementById("register-li").style.display = "block";
+    document.getElementById("logout-li").style.display = "none";
+  }
 }
 
 function createSearchListener() {
@@ -284,3 +323,10 @@ function createSearchListener() {
 // Show version at footer
 showVersion();
 createSearchListener();
+// Hide all authd stuff
+document.getElementById("logout-li").style.display = "none";
+if (getSession(CREDENTIAL_KEY) !== null) {
+  document.getElementById("login-li").style.display = "none";
+  document.getElementById("register-li").style.display = "none";
+  document.getElementById("logout-li").style.display = "block";
+}

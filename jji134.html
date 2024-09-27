@@ -30,6 +30,7 @@
                 <a class="link" onclick="showSection('nzsl')" id="nzsl-li">📖 NZSL</a>
                 <a class="link" onclick="showSection('events')" id="events-li">📅 Events</a>
                 <a class="link" onclick="showSection('login')" id="login-li">👪 Login</a>
+                <a class="link" onclick="logout()" id="logout-li">↩ Logout</a>
                 <a class="link" onclick="showSection('register')" id="register-li">📝 Register</a>
                 <a class="link" onclick="showSection('guest-book')" id="guest-book-li">✍ Guest Book</a>
             </div>
@@ -97,9 +98,10 @@
         <section id="login" style="display: none">
             <div class="content">
                 <h1>Login</h1>
-                <form onsubmit="submitLogin">
+                <form id="loginform" onsubmit="submitLogin(event)">
                     <input id="username" name="username" placeholder="Your username" />
-                    <input id="password" name="password" placeholder="Your password" />
+                    <input id="password" type="password" name="password" placeholder="Your password" />
+                    <p id="errors" style="color:red;"></p>
                     <button type="submit">Submit</button>
                 </form>
             </div>
@@ -107,10 +109,11 @@
         <section id="register" style="display: none">
             <div class="content">
                 <h1>Register</h1>
-                <form onsubmit="submitRegister">
+                <form id="loginform" onsubmit="submitRegister(event)">
                     <input id="username" name="username" placeholder="Your username" />
-                    <input id="password" name="password" placeholder="Your password" />
+                    <input id="password" type="password" name="password" placeholder="Your password" />
                     <input id="address" name="address" placeholder="Your address" />
+                    <p id="errors" style="color:red;"></p>
                     <button type="submit">Submit</button>
                 </form>
             </div>
@@ -123,9 +126,10 @@
         <section id="guest-book" style="display: none">
             <div class="content">
                 <h1>Guest book</h1>
-                <form onsubmit="submitComment(event)">
+                <form id="commentForm" onsubmit="submitComment(event)">
                     <textarea id="comment" name="comment" placeholder="Your comment"></textarea>
                     <button type="submit">Submit</button>
+                    <p id="errors"></p>
                 </form>
                 <div id="nzsl-comments"></div>
             </div>
