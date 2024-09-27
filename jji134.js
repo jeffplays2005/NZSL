@@ -148,12 +148,10 @@ async function login(username, password) {
       Authorization: `Basic ${convertToBase64(username, password)}`,
     },
   });
-  if (response.status !== 200) {
-    throw new Error("Invalid login. ");
+  if (response.status === 200) {
+    return true;
   }
-  // Set cookies or something
-  storeSession("credentials", convertToBase64(username, password));
-  return true;
+  return false;
 }
 function logout() {
   return clearSession();
@@ -183,13 +181,13 @@ function clearSession() {
 
 async function showSection(section) {
   const sections = document.querySelectorAll("section");
-  sections.forEach((section) => {
-    section.style.display = "none";
+  sections.forEach((sect) => {
+    sect.style.display = "none";
   });
   if (section == "nzsl") {
-    let signDiv = document.getElementById("nzsl-signs");
-    signDiv.innerText = "";
-    createSearchListener();
+    const searchBar = document.getElementById("nzsl-search");
+    searchBar.value = "";
+
     const signs = await fetchNZSLsigns("");
     signDiv = document.getElementById("nzsl-signs");
     const formattedSigns = formatSigns(signs);
@@ -200,17 +198,24 @@ async function showSection(section) {
 
 function createSearchListener() {
   const input = document.getElementById("nzsl-search");
-  if (input) {
-    input.addEventListener("input", async (event) => {
-      const term = event.target.value;
-      const signs = await fetchNZSLsigns(term);
-      const signDiv = document.getElementById("nzsl-signs");
-      const formattedSigns = formatSigns(signs);
-      signDiv.innerHTML = formattedSigns;
-    });
+  input.addEventListener("input", async (event) => {
+    const term = event.target.value;
+    const signs = await fetchNZSLsigns(term);
+    const signDiv = document.getElementById("nzsl-signs");
+    const formattedSigns = formatSigns(signs);
+    signDiv.innerHTML = formattedSigns;
+  });
+}
+// Responsive navbar
+function myFunction() {
+  var x = document.getElementById("nav");
+  if (x.className === "navbar") {
+    x.className += " responsive";
+  } else {
+    x.className = "navbar";
   }
 }
-
 // Add search bar logic
 // Show version at footer
 showVersion();
+createSearchListener();

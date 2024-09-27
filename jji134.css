@@ -14,8 +14,7 @@ body {
 }
 
 /* Nav bar stuff */
-
-nav {
+.navbar {
     width: calc(100% - 2em);
     height: 5em;
     display: flex;
@@ -28,7 +27,7 @@ nav {
     margin: 1em;
 }
 /* Header */
-nav header {
+.navbar header {
     height: 100%;
     float: left;
     display: flex;
@@ -36,43 +35,77 @@ nav header {
     align-items: center;
     margin-left: 0.5em;
 }
-nav header h2 {
+.navbar header h2 {
     font-size: 2em;
 }
-nav header img {
+.navbar header img {
     height: 70%;
     width: auto;
 }
-
-nav ul {
-    float: right;
-    margin-right: 1em;
+.navbar .items {
+    z-index: 2;
+}
+.navbar .links {
     gap: 0.5vw;
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 1;
-    align-items: center;
-    list-style-type: none; /* remove bullet points */
+    padding: 0;
+    width: 100%;
+    margin-top: 1.5em;
 }
 
-nav ul p {
-    color: white;
-}
-
-nav li {
+.navbar .links a {
     text-align: center;
+    align-items: center;
     padding: 0.5em;
+}
+/* The hidden hamburger icon */
+.navbar .icon {
+    display: none;
+    padding: 0.5em;
+    transition: 500ms;
 }
 
 /* Change the link color to #111 (black) on hover */
-nav li:hover {
+.navbar a.link:hover {
     background-color: black;
     color: white;
     border-radius: 0.5em;
     padding: 0.5em;
     cursor: pointer;
 }
+.navbar a.icon:hover {
+    background-color: grey;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    cursor: pointer;
+}
+@media screen and (max-width: 1150px) {
+    .navbar .links .link {
+        display: none; /* Hide list items */
+    }
 
+    .navbar .icon {
+        display: block; /* Show the hamburger icon */
+        margin-right: 4em;
+        margin-left: 4em;
+        margin-top: 0.5em;
+    }
+
+    .navbar.responsive .links {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        background-color: white;
+        border-radius: 0.5em;
+        padding-left: 0;
+        z-index: 10;
+        transition: 500ms;
+        padding: 1em;
+    }
+    .navbar.responsive .links .link {
+        display: block; /* Show list items */
+        text-align: center;
+        padding: 0.5em;
+    }
+}
 /* Main content */
 .main {
     flex-grow: 1;

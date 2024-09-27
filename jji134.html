@@ -10,21 +10,30 @@
 </head>
 <body>
     <!-- Header -->
-    <nav>
+    <nav class="navbar" id="nav">
         <header>
             <img src ="https://cws.auckland.ac.nz/nzsl/api/Logo" alt="NZSL" />
             <h2>
                 NZSL Web Application
             </h2>
         </header>
-        <ul>
-            <li onclick="showSection('home')">🏠 Home</li>
-            <li onclick="showSection('nzsl')">📖 NZSL</li>
-            <li onclick="showSection('events')">📅 Events</li>
-            <li onclick="showSection('login')">👪 Login</li>
-            <li onclick="showSection('register')">📝 Register</li>
-            <li onclick="showSection('guest-book')">✍ Guest Book</li>
-        </ul>
+        <div class="items">
+            <a class="icon" style="40px" onclick="myFunction()">
+                <svg viewBox="0 0 100 80" width="40" height="40">
+                    <rect width="100" height="20"></rect>
+                    <rect y="30" width="100" height="20"></rect>
+                    <rect y="60" width="100" height="20"></rect>
+                </svg>
+            </a>
+            <div class="links">
+                <a class="link" onclick="showSection('home')" id="home-li">🏠 Home</a>
+                <a class="link" onclick="showSection('nzsl')" id="nzsl-li">📖 NZSL</a>
+                <a class="link" onclick="showSection('events')" id="events-li">📅 Events</a>
+                <a class="link" onclick="showSection('login')" id="login-li">👪 Login</a>
+                <a class="link" onclick="showSection('register')" id="register-li">📝 Register</a>
+                <a class="link" onclick="showSection('guest-book')" id="guest-book-li">✍ Guest Book</a>
+            </div>
+        </div>
     </nav>
     <!-- Body -->
     <div class="main">
