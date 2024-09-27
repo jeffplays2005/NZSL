@@ -49,7 +49,6 @@ body {
     gap: 0.5vw;
     padding: 0;
     width: 100%;
-    margin-top: 1.5em;
 }
 
 .navbar .links a {
@@ -79,7 +78,7 @@ body {
     cursor: pointer;
 }
 @media screen and (max-width: 1150px) {
-    .navbar .links .link {
+    .navbar .links {
         display: none; /* Hide list items */
     }
 
@@ -88,9 +87,10 @@ body {
         margin-right: 4em;
         margin-left: 4em;
         margin-top: 0.5em;
+        margin-bottom: 0.8em;
     }
 
-    .navbar.responsive .links {
+    .navbar .items:hover .links {
         display: flex;
         flex-direction: column; /* Stack items vertically */
         background-color: white;
@@ -99,11 +99,6 @@ body {
         z-index: 10;
         transition: 500ms;
         padding: 1em;
-    }
-    .navbar.responsive .links .link {
-        display: block; /* Show list items */
-        text-align: center;
-        padding: 0.5em;
     }
 }
 /* Main content */
@@ -182,6 +177,49 @@ section {
     color: white;
     box-shadow: 0 0 20px 10px grey;
 }
+/* Comments */
+#nzsl-comments {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 1em;
+}
+#nzsl-comments p {
+    background-color: white;
+    color: black !important;
+    border-radius: 0.5em;
+    padding: 1em;
+    transition: 500ms;
+}
+#nzsl-comments p:hover {
+    background-color: black;
+    color: white !important;
+    box-shadow: 0 0 20px 10px grey;
+}
+/* Forms and etcs */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 2em;
+}
+form input {
+    width: 100%;
+    height: 4em;
+    border-radius: 0.5em;
+    font-size: 1em;
+}
+form textarea {
+    width: 100%;
+    height: 4em;
+    font-size: 1em;
+}
+form button {
+    height: 2em;
+    width: 20%;
+    font-size: 1em;
+}
 /* Footer */
 footer {
     display: flex;
@@ -189,6 +227,7 @@ footer {
     justify-content: center;
     height: 10%;
     width: 100%; /* Ensure that the footer takes 100% of the width */
+    padding-bottom: 1em;
     align-items: center;
     text-align: center;
     color: white;

@@ -1,3 +1,4 @@
+const CREDENTIAL_KEY = "credentials";
 /**
  * Version methods
  */
@@ -145,21 +146,40 @@ async function getAllComments() {
   const data = await response.text();
   return data;
 }
-function displayComments() {}
+async function displayComments() {
+  const commentsDiv = document.getElementById("nzsl-comments");
+  commentsDiv.innerHTML = await getAllComments();
+}
 async function addComment(comment) {
   const response = await fetch(
     `https://cws.auckland.ac.nz/nzsl/api/Comment?comment=${comment}`,
     {
       method: "POST",
       headers: {
-        Authorization: `Basic ${getSession("credentials")}`,
+        Authorization: `Basic ${getSession(CREDENTIAL_KEY)}`,
       },
     },
   );
   const data = await response.text();
   return data;
 }
-
+async function submitComment(event) {
+  event.preventDefault();
+  // Check for auth
+  if (getSession(CREDENTIAL_KEY) == null) {
+    return showSection("login");
+  }
+  console.log(getSession(CREDENTIAL_KEY));
+  const form = event.target;
+  const formData = new FormData(form);
+  // Convert form data to an object (optional, for easier use)
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+  await addComment(data.comment);
+  showSection("guest-book");
+}
 /**
  * Auth methods
  */
@@ -191,6 +211,8 @@ async function login(username, password) {
   }
   return false;
 }
+function submitLogin() {}
+
 function logout() {
   return clearSession();
 }
@@ -234,6 +256,9 @@ async function showSection(section) {
   if (section == "events") {
     displayEvents();
   }
+  if (section == "guest-book") {
+    displayComments();
+  }
   document.getElementById(section).style.display = "block";
 }
 
@@ -247,14 +272,14 @@ function createSearchListener() {
   });
 }
 // Responsive navbar
-function myFunction() {
-  var x = document.getElementById("nav");
-  if (x.className === "navbar") {
-    x.className += " responsive";
-  } else {
-    x.className = "navbar";
-  }
-}
+// function myFunction() {
+//   var x = document.getElementById("nav");
+//   if (x.className === "navbar") {
+//     x.className += " responsive";
+//   } else {
+//     x.className = "navbar";
+//   }
+// }
 // Add search bar logic
 // Show version at footer
 showVersion();
