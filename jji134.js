@@ -140,9 +140,10 @@ async function getEvent(eventID) {
  * Parses the date string and returns the parsed date.
  * Converts the ISO date into NZ time.
  * @param {string} dateString - The date string
+ * @param {string} timezone - The timezone
  * @returns {string} - The parsed date
  */
-function functionParseDate(dateString) {
+function parseDate(dateString) {
   // 2024-09-03T01:00:00Z
   const year = dateString.substring(0, 4); // 2024
   const month = dateString.substring(4, 6); // 09
@@ -153,7 +154,10 @@ function functionParseDate(dateString) {
   const newDate = new Date(
     `${year}-${month}-${day}T${hour}:${minutes}:${seconds}Z`,
   );
-  return newDate.toLocaleString([], { timeZone: "Pacific/Auckland" });
+  return newDate.toLocaleString([], {
+    timeZone: "Pacific/Auckland",
+    hour12: true,
+  });
 }
 
 /**
@@ -165,8 +169,8 @@ function functionParseDate(dateString) {
 function parseVcalendar(calendar, id) {
   const splitted = calendar.split("\n").map((x) => x.split(":")[1]);
   return {
-    start: functionParseDate(splitted[6], splitted[8]),
-    end: functionParseDate(splitted[7], splitted[8]),
+    start: parseDate(splitted[6]),
+    end: parseDate(splitted[7]),
     timezone: splitted[8],
     summary: splitted[9],
     description: splitted[10],
@@ -409,8 +413,8 @@ async function submitLogin(event) {
 /**
  * Logs out the user and redirects to the login page after.
  */
-async function logout() {
-  await clearSession();
+function logout() {
+  clearSession();
   return showSection("login");
 }
 
@@ -454,6 +458,34 @@ function clearSession() {
 }
 
 /**
+ * Checks the session and updates the page accordingly.
+ */
+function checkSession() {
+  if (getSession(CREDENTIAL_KEY) !== null) {
+    document.getElementById("login-li").style.display = "none";
+    document.getElementById("register-li").style.display = "none";
+    document.getElementById("logout-li").style.display = "block";
+    document.getElementById("status").innerHTML =
+      `Logged in as: <i>${atob(getSession(CREDENTIAL_KEY)).split(":")[0]}</i>`;
+  } else {
+    document.getElementById("login-li").style.display = "block";
+    document.getElementById("register-li").style.display = "block";
+    document.getElementById("logout-li").style.display = "none";
+    document.getElementById("status").innerText = "";
+  }
+}
+
+/**
+ * Resets all the status messages on the page.
+ */
+function resetStatusMessages() {
+  document.getElementById("login-errors").innerText = "";
+  document.getElementById("register-errors").innerText = "";
+  document.getElementById("comment-errors").innerText = "";
+  document.getElementById("success").innerText = "";
+}
+
+/**
  * The main method to show a section.
  * @param {string} section - The section to show
  */
@@ -481,23 +513,12 @@ async function showSection(section) {
   if (section == "guest-book") {
     displayComments();
   }
+  // Hide all authenticated stuff
+  checkSession();
+  // Reset all errors
+  resetStatusMessages();
   // Display the section requested
   document.getElementById(section).style.display = "block";
-  // Hide all authenticated stuff
-  if (getSession(CREDENTIAL_KEY) !== null) {
-    document.getElementById("login-li").style.display = "none";
-    document.getElementById("register-li").style.display = "none";
-    document.getElementById("logout-li").style.display = "block";
-  } else {
-    document.getElementById("login-li").style.display = "block";
-    document.getElementById("register-li").style.display = "block";
-    document.getElementById("logout-li").style.display = "none";
-  }
-  // Reset all errors
-  document.getElementById("login-errors").innerText = "";
-  document.getElementById("register-errors").innerText = "";
-  document.getElementById("comment-errors").innerText = "";
-  document.getElementById("success").innerText = "";
 }
 
 /**
@@ -517,16 +538,9 @@ function createSearchListener() {
 showVersion();
 // Add searchbar listener
 createSearchListener();
-// Hide all authenticated buttons
-document.getElementById("logout-li").style.display = "none";
-// Hide all authenticated stuff, this just ensures that the correct buttons are displayed.
-if (getSession(CREDENTIAL_KEY) !== null) {
-  document.getElementById("login-li").style.display = "none";
-  document.getElementById("register-li").style.display = "none";
-  document.getElementById("logout-li").style.display = "block";
-} else {
-  document.getElementById("login-li").style.display = "block";
-  document.getElementById("register-li").style.display = "block";
-  document.getElementById("logout-li").style.display = "none";
-}
+// Hide all authenticated buttons, this just ensures that the correct buttons are displayed.
+checkSession();
+// Reset all status messages
+resetStatusMessages();
+// Show the home page
 showSection("home");
