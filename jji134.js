@@ -483,14 +483,14 @@ async function createLogSVG(logs) {
     <line x1="1000" y1="0" x2="1000" y2="350" stroke="white" stroke-width="3"/>
     <line x1="80" y1="0" x2="1000" y2="0" stroke="white" stroke-width="3"/>
 
-    <!-- Y-axis labels -->
+    <!-- Min and max count labels -->
     <text x="10" y="340" font-family="Arial" fill="white" font-size="25">${minCount}</text>
     <text x="10" y="20" font-family="Arial" fill="white" font-size="25">${maxCount}</text>
 
-    <!-- Visit Line (red) -->
+    <!-- Visit line -->
     <polyline points="${visitLine.join(" ")}" fill="none" stroke="red" stroke-width="3"/>
 
-    <!-- Unique Visit Line (green) -->
+    <!-- Unique visit line -->
     <polyline points="${uniqueVisitLine.join(" ")}" fill="none" stroke="green" stroke-width="3"/>
   </svg>`;
   return svg;
