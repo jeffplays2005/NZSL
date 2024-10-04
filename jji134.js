@@ -431,18 +431,25 @@ async function fetchLogs() {
   return logs;
 }
 
+/**
+ * Displays the logs on the page.
+ */
 async function displayLogs() {
   // Fetch logs and create svg
   const logs = await fetchLogs();
-  const svg = await createLogSVG(logs);
+  const svg = createLogSVG(logs);
   // Set start date and end date td
   setLogDates(logs);
-  setDataDates(logs);
+  setLogData(logs);
   // Fetch logs divider and set inner html to the svg
   const logsDiv = document.getElementById("nzsl-logs");
   logsDiv.innerHTML = svg;
 }
 
+/**
+ * Sets the start and end date of the logs.
+ * @param {Array} logs - The logs to set the dates for
+ */
 function setLogDates(logs) {
   const datesDiv = document.getElementById("log-dates");
   const startDate = logs[0].date;
@@ -453,14 +460,23 @@ function setLogDates(logs) {
   </tr>`;
 }
 
-function setDataDates(logs) {
+/**
+ * Sets the log data in the log-data div.
+ * @param {Array} logs - The logs to set the data for
+ */
+function setLogData(logs) {
   const visits = logs.map((log) => log.visits).join(",");
   const uniqueVisits = logs.map((log) => log.uniqueVisits).join(",");
   const dataDiv = document.getElementById("log-data");
   dataDiv.innerHTML = `${visits}<br/>${uniqueVisits}`;
 }
 
-async function createLogSVG(logs) {
+/**
+ * Creates an SVG element to display the logs.
+ * @param {Array} logs - The logs to display
+ * @returns {string} - The SVG element as a string
+ */
+function createLogSVG(logs) {
   const numberOfDays = logs.length;
 
   const maxCount = Math.max(...logs.map((log) => log.visits));
