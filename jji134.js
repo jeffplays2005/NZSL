@@ -431,17 +431,69 @@ async function fetchLogs() {
   return logs;
 }
 
-async function createLogSVG() {
+async function displayLogs() {
+  // Fetch logs and create svg
   const logs = await fetchLogs();
-  const days = logs.length;
-  // const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
-  //   <circle cx="500" cy="726" r="250" fill="#a9a9a9" />
-  //   <rect x="138" y="426" rx="50" ry="50" width="100" height="350" fill="#a9a9a9" />
-  //   <rect x="300" y="101" rx="50" ry="50" width="100" height="400" fill="#a9a9a9" />
-  //   <rect x="425" y="26" rx="50" ry="50" width="100" height="438" fill="#a9a9a9" />
-  //   <rect x="550" y="88" rx="50" width="100" height="388" fill="#a9a9a9" />
-  //   <rect x="675" y="226" rx="50" width="100" height="338" fill="#a9a9a9" />
-  // </svg>`;
+  const svg = await createLogSVG(logs);
+  // Set start date and end date td
+  setLogDates(logs);
+  setDataDates(logs);
+  // Fetch logs divider and set inner html to the svg
+  const logsDiv = document.getElementById("nzsl-logs");
+  logsDiv.innerHTML = svg;
+}
+
+function setLogDates(logs) {
+  const datesDiv = document.getElementById("log-dates");
+  const startDate = logs[0].date;
+  const endDate = logs[logs.length - 1].date;
+  datesDiv.innerHTML = `<tr>
+    <td style="text-align: left;">${startDate}</td>
+    <td style="text-align: right;">${endDate}</td>
+  </tr>`;
+}
+
+function setDataDates(logs) {
+  const visits = logs.map((log) => log.visits).join(",");
+  const uniqueVisits = logs.map((log) => log.uniqueVisits).join(",");
+  const dataDiv = document.getElementById("log-data");
+  dataDiv.innerHTML = `${visits}<br/>${uniqueVisits}`;
+}
+
+async function createLogSVG(logs) {
+  const numberOfDays = logs.length;
+
+  const maxCount = Math.max(...logs.map((log) => log.visits));
+  const minCount = Math.min(...logs.map((log) => log.uniqueVisits));
+
+  const dayWidth = 920 / (numberOfDays - 1);
+  const countHeight = 350 / (maxCount - minCount);
+
+  const visitLine = logs.map((log, index) => {
+    return `${80 + index * dayWidth},${350 - (log.visits - minCount) * countHeight}`;
+  });
+  const uniqueVisitLine = logs.map((log, index) => {
+    return `${80 + index * dayWidth},${350 - (log.uniqueVisits - minCount) * countHeight}`;
+  });
+
+  const svg = `<svg viewBox="0 0 1000 350" xmlns="http://www.w3.org/2000/svg">
+    <!-- Axis lines -->
+    <line x1="80" y1="0" x2="80" y2="350" stroke="white" stroke-width="3"/>
+    <line x1="80" y1="350" x2="1000" y2="350" stroke="white" stroke-width="4"/>
+    <line x1="1000" y1="0" x2="1000" y2="350" stroke="white" stroke-width="3"/>
+    <line x1="80" y1="0" x2="1000" y2="0" stroke="white" stroke-width="3"/>
+
+    <!-- Y-axis labels -->
+    <text x="10" y="340" font-family="Arial" fill="white" font-size="25">${minCount}</text>
+    <text x="10" y="20" font-family="Arial" fill="white" font-size="25">${maxCount}</text>
+
+    <!-- Visit Line (red) -->
+    <polyline points="${visitLine.join(" ")}" fill="none" stroke="red" stroke-width="3"/>
+
+    <!-- Unique Visit Line (green) -->
+    <polyline points="${uniqueVisitLine.join(" ")}" fill="none" stroke="green" stroke-width="3"/>
+  </svg>`;
+  return svg;
 }
 
 /**
@@ -538,6 +590,9 @@ async function showSection(section) {
   }
   if (section == "guest-book") {
     displayComments();
+  }
+  if (section == "log") {
+    displayLogs();
   }
   // Hide all authenticated stuff
   checkSession();
