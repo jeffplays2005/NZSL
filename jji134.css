@@ -247,13 +247,12 @@ form button {
     padding-bottom: 0.5em;
 }
 .log .legend {
-    font-size: 1.5em;
-    display: flex;
-    flex-direction: row;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    font-size: 1.2em;
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin: 1em;
 }
 .log p {
     font-size: 0.6em;
